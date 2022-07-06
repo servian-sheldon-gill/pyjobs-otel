@@ -7,10 +7,6 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import ConsoleSpanExporter, BatchSpanProcessor
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
-# Set up a simple processor to write spans out to the console so we can see what's happening.
-trace.set_tracer_provider(TracerProvider())
-trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -28,6 +24,8 @@ def main():
         except json.decoder.JSONDecodeError:
             pass
 
+    trace.set_tracer_provider(TracerProvider())
+    trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
     tracer = trace.get_tracer(__name__)
     ctx = TraceContextTextMapPropagator().extract(carrier=carrier)
     context.attach(ctx)
